@@ -227,3 +227,147 @@ SwiftUI uses computed properties extensively – you’ll see them in the very f
 
 
 
+How to take action when a property changes
+
+Swift lets us create property observers, which are special pieces of code that run when properties change. These take two forms: a didSet observer to run 
+when the property just changed, and a willSet observer to run before the property changed.
+
+To see why property observers might be needed, think about code like this:
+
+struct Game {
+    var score = 0
+}
+
+var game = Game()
+game.score += 10
+print("Score is now \(game.score)")
+game.score -= 3
+print("Score is now \(game.score)")
+game.score += 1
+
+That creates a Game struct, and modifies its score a few times. Each time the score changes, a print() line follows it so we can keep track of the changes. 
+Except there’s a bug: at the end the score changed without being printed, which is a mistake.
+
+With property observers we can solve this problem by attaching the print() call directly to the property using didSet, so that whenever it changes – 
+wherever it changes – we will always run some code.
+
+Here’s that same example, now with a property observer in place:
+
+struct Game {
+    var score = 0 {
+        didSet {
+            print("Score is now \(score)")
+        }
+    }
+}
+
+var game = Game()
+game.score += 10
+game.score -= 3
+game.score += 1
+
+If you want it, Swift automatically provides the constant oldValue inside didSet, in case you need to have custom functionality based on what you were 
+changing from. There’s also a willSet variant that runs some code before the property changes, which in turn provides the new value that will be assigned 
+in case you want to take different action based on that.
+
+We can demonstrate all this functionality in action using one code sample, which will print messages as the values change so you can see the flow when the 
+code is run:
+
+struct App {
+    var contacts = [String]() {
+        willSet {
+            print("Current value is: \(contacts)")
+            print("New value will be: \(newValue)")
+        }
+
+        didSet {
+            print("There are now \(contacts.count) contacts.")
+            print("Old value was \(oldValue)")
+        }
+    }
+}
+
+var app = App()
+app.contacts.append("Adrian E")
+app.contacts.append("Allen W")
+app.contacts.append("Ish S")
+
+Yes, appending to an array will trigger both willSet and didSet, so that code will print lots of text when run.
+
+In practice, willSet is used much less than didSet, but you might still see it from time to time so it’s important you know it exists. Regardless of which 
+you choose, please try to avoid putting too much work into property observers – if something that looks trivial such as game.score += 1 triggers intensive 
+work, it will catch you out on a regular basis and cause all sorts of performance problems.
+
+
+
+How to create custom initializers
+
+Initializers are specialized methods that are designed to prepare a new struct instance to be used. You’ve already seen how Swift silently generates one 
+for us based on the properties we place inside a struct, but you can also create your own as long as you follow one golden rule: all properties must have 
+a value by the time the initializer ends.
+
+Let’s start by looking again at Swift’s default initializer for structs:
+
+struct Player {
+    let name: String
+    let number: Int
+}
+
+let player = Player(name: "Megan R", number: 15)
+
+That creates a new Player instance by providing values for its two properties. Swift calls this the memberwise initializer, which is a fancy way of saying 
+an initializer that accepts each property in the order it was defined.
+
+Like I said, this kind of code is possible because Swift silently generates an initializer accepting those two values, but we could write our own to do the 
+same thing. The only catch here is that you must be careful to distinguish between the names of parameters coming in and the names of properties being assigned.
+
+Here’s how that would look:
+
+struct Player {
+    let name: String
+    let number: Int
+
+    init(name: String, number: Int) {
+        self.name = name
+        self.number = number
+    }
+}
+
+That works the same as our previous code, except now the initializer is owned by us so we can add extra functionality there if needed.
+
+However, there are a couple of things I want you to notice:
+
+There is no func keyword. Yes, this looks like a function in terms of its syntax, but Swift treats initializers specially.
+Even though this creates a new Player instance, initializers never explicitly have a return type – they always return the type of data they belong to.
+I’ve used self to assign parameters to properties to clarify we mean “assign the name parameter to my name property”.
+
+That last point is particularly important, because without self we’d have name = name and that doesn’t make sense – are we assigning the property to the 
+parameter, assigning the parameter to itself, or something else? By writing self.name we’re clarifying we mean “the name property that belongs to my current 
+instance,” as opposed to anything else.
+
+Of course, our custom initializers don’t need to work like the default memberwise initializer Swift provides us with. For example, we could say that you 
+must provide a player name, but the shirt number is randomized:
+
+struct Player {
+    let name: String
+    let number: Int
+
+    init(name: String) {
+        self.name = name
+        number = Int.random(in: 1...99)
+    }
+}
+
+let player = Player(name: "Megan R")
+print(player.number)
+
+Just remember the golden rule: all properties must have a value by the time the initializer ends. If we had not provided a value for number inside the 
+initializer, Swift would refuse to build our code.
+
+Important: Although you can call other methods of your struct inside your initializer, you can’t do so before assigning values to all your properties – 
+Swift needs to be sure everything is safe before doing anything else.
+
+You can add multiple initializers to your structs if you want, as well as leveraging features such as external parameter names and default values. 
+However, as soon as you implement your own custom initializers you’ll lose access to Swift’s generated memberwise initializer unless you take extra steps 
+to retain it. This isn’t an accident: if you have a custom initializer, Swift effectively assumes that’s because you have some special way to initialize 
+your properties, which means the default one should no longer be available.
