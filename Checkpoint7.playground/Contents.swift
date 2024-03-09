@@ -1,43 +1,73 @@
 import Cocoa
 
-struct Car
+class Animal
 {
-    let model: String
-    let numberOfSeats: Int
-    private(set) var currentGear: Int
+    var legs: Int
     
-    init(model: String, numberOfSeats: Int, currentGear: Int)
+    init(legs: Int) 
     {
-        self.model = model
-        self.numberOfSeats = numberOfSeats
-        self.currentGear = currentGear
+        self.legs = legs
     }
-    
-    mutating func changeGear(up: Bool)
-    {
-        if up
-        {
-            if(currentGear < 10)
-            {
-                currentGear += 1
-            }
-        }
-        else
-        {
-            if(currentGear > 1)
-            {
-                currentGear -= 1
-            }
-        }
-    }
-    
 }
 
+class Dog: Animal
+{
+    func speak()
+    {
+        print("Sou um cachorro!")
+    }
+}
 
+class Cat: Animal
+{
+    var isTame: Bool
+    
+    init(isTame: Bool) 
+    {
+        self.isTame = isTame
+        super.init(legs: 4)
+    }
+    
+    func speak()
+    {
+        print("Sou um gato!")
+    }
+}
 
-var meuCarro = Car(model: "Tesla", numberOfSeats: 5, currentGear: 1)
-print("Marcha atual: \(meuCarro.currentGear)")
-meuCarro.changeGear(up: true)
-print("Marcha após aumentar: \(meuCarro.currentGear)")
-meuCarro.changeGear(up: false)
-print("Marcha após diminuir: \(meuCarro.currentGear)")
+class Corgi: Dog
+{
+    override func speak() 
+    {
+        print("Sou um corgi!")
+    }
+}
+
+class Poodle: Dog
+{
+    override func speak() 
+    {
+        print("Sou um poodle!")
+    }
+}
+
+class Persion: Cat
+{
+    override func speak() 
+    {
+        print("Sou um persion!")
+    }
+}
+
+class Lion: Cat
+{
+    override func speak() 
+    {
+        print("Sou um lion!")
+    }
+}
+
+var dogao = Dog(legs: 4)
+dogao.speak()
+
+var gatinho = Persion(isTame: true)
+gatinho.speak()
