@@ -301,3 +301,249 @@ want to write out the exact thing – you figure it out for yourself.”
 
 
 
+How to create and use extensions
+
+Extensions let us add functionality to any type, whether we created it or someone else created it – even one of Apple’s own types.
+
+To demonstrate this, I want to introduce you to a useful method on strings, called trimmingCharacters(in:). This removes certain kinds of characters from 
+the start or end of a string, such as alphanumeric letters, decimal digits, or, most commonly, whitespace and new lines.
+
+Whitespace is the general term of the space character, the tab character, and a variety of other variants on those two. New lines are line breaks in text, 
+which might sound simple but in practice of course there is no single one way of making them, so when we ask to trim new lines it will automatically take 
+care of all the variants for us.
+
+For example, here’s a string that has whitespace on either side:
+
+var quote = "   The truth is rarely pure and never simple   "
+
+If we wanted to trim the whitespace and newlines on either side, we could do so like this:
+
+let trimmed = quote.trimmingCharacters(in: .whitespacesAndNewlines)
+
+The .whitespacesAndNewlines value comes from Apple’s Foundation API, and actually so does trimmingCharacters(in:) – like I said way back at the beginning 
+of this course, Foundation is really packed with useful code!
+
+Having to call trimmingCharacters(in:) every time is a bit wordy, so let’s write an extension to make it shorter:
+
+extension String {
+    func trimmed() -> String {
+        self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+Let’s break that down…
+
+We start with the extension keyword, which tells Swift we want to add functionality to an existing type.
+Which type? Well, that comes next: we want to add functionality to String.
+Now we open a brace, and all the code until the final closing brace is there to be added to strings.
+We’re adding a new method called trimmed(), which returns a new string.
+Inside there we call the same method as before: trimmingCharacters(in:), sending back its result.
+Notice how we can use self here – that automatically refers to the current string. This is possible because we’re currently in a string extension.
+
+And now everywhere we want to remove whitespace and newlines we can just write the following:
+
+let trimmed = quote.trimmed()
+
+Much easier!
+
+That’s saved some typing, but is it that much better than a regular function?
+
+Well, the truth is that we could have written a function like this:
+
+func trim(_ string: String) -> String {
+    string.trimmingCharacters(in: .whitespacesAndNewlines)
+}
+
+Then used it like this:
+
+let trimmed2 = trim(quote)
+
+That’s less code than using an extension, both in terms of making the function and using it. This kind of function is called a global function, because 
+it’s available everywhere in our project.
+
+However, the extension has a number of benefits over the global function, including:
+
+When you type quote. Xcode brings up a list of methods on the string, including all the ones we add in extensions. This makes our extra functionality easy 
+to find.
+Writing global functions makes your code rather messy – they are hard to organize and hard to keep track of. On the other hand, extensions are naturally 
+grouped by the data type they are extending.
+Because your extension methods are a full part of the original type, they get full access to the type’s internal data. That means they can use properties 
+and methods marked with private access control, for example.
+
+What’s more, extensions make it easier to modify values in place – i.e., to change a value directly, rather than return a new value.
+
+For example, earlier we wrote a trimmed() method that returns a new string with whitespace and newlines removed, but if we wanted to modify the string 
+directly we could add this to the extension:
+
+mutating func trim() {
+    self = self.trimmed()
+}
+
+Because the quote string was created as a variable, we can trim it in place like this:
+
+quote.trim()
+
+Notice how the method has slightly different naming now: when we return a new value we used trimmed(), but when we modified the string directly we used 
+trim(). This is intentional, and is part of Swift’s design guidelines: if you’re returning a new value rather than changing it in place, you should use 
+word endings like ed or ing, like reversed().
+
+Tip: Previously I introduced you to the sorted() method on arrays. Now you know this rule, you should realize that if you create a variable array you can 
+use sort() on it to sort the array in place rather than returning a new copy.
+
+You can also use extensions to add properties to types, but there is one rule: they must only be computed properties, not stored properties. The reason 
+for this is that adding new stored properties would affect the actual size of the data types – if we added a bunch of stored properties to an integer then 
+every integer everywhere would need to take up more space in memory, which would cause all sorts of problems.
+
+Fortunately, we can still get a lot done using computed properties. For example, one property I like to add to strings is called lines, which breaks the 
+string up into an array of individual lines. This wraps another string method called components(separatedBy:), which breaks the string up into a string 
+array by splitting it on a boundary of our choosing. In this case we’d want that boundary to be new lines, so we’d add this to our string extension:
+
+var lines: [String] {
+    self.components(separatedBy: .newlines)
+}
+
+With that in place we can now read the lines property of any string, like so:
+
+let lyrics = """
+But I keep cruising
+Can't stop, won't stop moving
+It's like I got this music in my mind
+Saying it's gonna be alright
+"""
+
+print(lyrics.lines.count)
+
+Whether they are single lines or complex pieces of functionality, extensions always have the same goal: to make your code easier to write, easier to read, 
+and easier to maintain in the long term.
+
+Before we’re done, I want to show you one really useful trick when working with extensions. You’ve seen previously how Swift automatically generates a 
+memberwise initializer for structs, like this:
+
+struct Book {
+    let title: String
+    let pageCount: Int
+    let readingHours: Int
+}
+
+let lotr = Book(title: "Lord of the Rings", pageCount: 1178, readingHours: 24)
+
+I also mentioned how creating your own initializer means that Swift will no longer provide the memberwise one for us. This is intentional, because a 
+custom initializer means we want to assign data based on some custom logic, like this:
+
+struct Book {
+    let title: String
+    let pageCount: Int
+    let readingHours: Int
+
+    init(title: String, pageCount: Int) {
+        self.title = title
+        self.pageCount = pageCount
+        self.readingHours = pageCount / 50
+    }
+}
+
+If Swift were to keep the memberwise initializer in this instance, it would skip our logic for calculating the approximate reading time.
+
+However, sometimes you want both – you want the ability to use a custom initializer, but also retain Swift’s automatic memberwise initializer. In this 
+situation it’s worth knowing exactly what Swift is doing: if we implement a custom initializer inside our struct, then Swift disables the automatic 
+memberwise initializer.
+
+That extra little detail might give you a hint on what’s coming next: if we implement a custom initializer inside an extension, then Swift won’t disable 
+the automatic memberwise initializer. This makes sense if you think about it: if adding a new initializer inside an extension also disabled the default 
+initializer, one small change from us could break all sorts of other Swift code.
+
+So, if we wanted our Book struct to have the default memberwise initializer as well as our custom initializer, we’d place the custom one in an extension, 
+like this:
+
+extension Book {
+    init(title: String, pageCount: Int) {
+        self.title = title
+        self.pageCount = pageCount
+        self.readingHours = pageCount / 50
+    }
+}
+
+
+
+How to create and use protocol extensions
+
+Protocols let us define contracts that conforming types must adhere to, and extensions let us add functionality to existing types. But what would happen 
+if we could write extensions on protocols?
+
+Well, wonder no more because Swift supports exactly this using the aptly named protocol extensions: we can extend a whole protocol to add method 
+implementations, meaning that any types conforming to that protocol get those methods.
+
+Let’s start with a trivial example. It’s very common to write a condition checking whether an array has any values in, like this:
+
+let guests = ["Mario", "Luigi", "Peach"]
+
+if guests.isEmpty == false {
+    print("Guest count: \(guests.count)")
+}
+Some people prefer to use the Boolean ! operator, like this:
+
+if !guests.isEmpty {
+    print("Guest count: \(guests.count)")
+}
+I’m not really a big fan of either of those approaches, because they just don’t read naturally to me “if not some array is empty”?
+
+We can fix this with a really simple extension for Array, like this:
+
+extension Array {
+    var isNotEmpty: Bool {
+        isEmpty == false
+    }
+}
+Tip: Xcode’s playgrounds run their code from top to bottom, so make sure you put that extension before where it’s used.
+
+Now we can write code that I think is easier to understand:
+
+if guests.isNotEmpty {
+    print("Guest count: \(guests.count)")
+}
+But we can do better. You see, we just added isNotEmpty to arrays, but what about sets and dictionaries? Sure, we could repeat ourself and copy the code 
+into extensions for those, but there’s a better solution: Array, Set, and Dictionary all conform to a built-in protocol called Collection, through which 
+they get functionality such as contains(), sorted(), reversed(), and more.
+
+This is important, because Collection is also what requires the isEmpty property to exist. So, if we write an extension on Collection, we can still access 
+isEmpty because it’s required. This means we can change Array to Collection in our code to get this:
+
+extension Collection {
+    var isNotEmpty: Bool {
+        isEmpty == false
+    }
+}
+With that one word change in place, we can now use isNotEmpty on arrays, sets, and dictionaries, as well as any other types that conform to Collection. 
+Believe it or not, that tiny extension exists in thousands of Swift projects because so many other people find it easier to read.
+
+More importantly, by extending the protocol we’re adding functionality that would otherwise need to be done inside individual structs. This is really 
+powerful, and leads to a technique Apple calls protocol-oriented programming – we can list some required methods in a protocol, then add default 
+implementations of those inside a protocol extension. All conforming types then get to use those default implementations, or provide their own as needed.
+
+For example, if we had a protocol like this one:
+
+protocol Person {
+    var name: String { get }
+    func sayHello()
+}
+That means all conforming types must add a sayHello() method, but we can also add a default implementation of that as an extension like this:
+
+extension Person {
+    func sayHello() {
+        print("Hi, I'm \(name)")
+    }
+}
+And now conforming types can add their own sayHello() method if they want, but they don’t need to – they can always rely on the one provided inside our 
+protocol extension.
+
+So, we could create an employee without the sayHello() method:
+
+struct Employee: Person {
+    let name: String
+}
+But because it conforms to Person, we could use the default implementation we provided in our extension:
+
+let taylor = Employee(name: "Taylor Swift")
+taylor.sayHello()
+Swift uses protocol extensions a lot, but honestly you don’t need to understand them in great detail just yet – you can build fantastic apps without ever 
+using a protocol extension. At this point you know they exist and that’s enough!
