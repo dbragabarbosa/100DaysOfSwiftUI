@@ -547,3 +547,26 @@ let taylor = Employee(name: "Taylor Swift")
 taylor.sayHello()
 Swift uses protocol extensions a lot, but honestly you don’t need to understand them in great detail just yet – you can build fantastic apps without ever 
 using a protocol extension. At this point you know they exist and that’s enough!
+
+
+
+Summary: Protocols and extensions
+
+In these chapters we’ve covered some complex but powerful features of Swift, but don’t feel bad if you struggled a bit – these really are hard to grasp at 
+first, and they’ll only really sink in once you’ve had time to try them out in your own code.
+
+Let’s recap what we learned:
+
+Protocols are like contracts for code: we specify the functions and methods that we required, and conforming types must implement them.
+
+Opaque return types let us hide some information in our code. That might mean we want to retain flexibility to change in the future, but also means we 
+don’t need to write out gigantic return types.
+
+Extensions let us add functionality to our own custom types, or to Swift’s built-in types. This might mean adding a method, but we can also add computed 
+properties.
+
+Protocol extensions let us add functionality to many types all at once – we can add properties and methods to a protocol, and all conforming types get 
+access to them.
+
+When we boil it down to that these features seem easy, but they aren’t. You need to know about them, to know that they exist, but you need to use them only 
+superficially in order to continue your learning journey.
