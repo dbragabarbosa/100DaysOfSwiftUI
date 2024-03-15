@@ -127,3 +127,170 @@ What’s happening here is that we’re temporarily creating a second constant o
 shadowing, and it’s mainly used with optional unwraps like you can see above.
 
 So, inside the condition’s body we have an unwrapped value to work with – a real Int rather than an optional Int? – but outside we still have the optional.
+
+
+
+How to unwrap optionals with guard
+
+You’ve already seen how Swift uses if let to unwrap optionals, and it’s the most common way of using optionals. But there is a second way that does much 
+the same thing, and it’s almost as common: guard let.
+
+It looks like this:
+
+func printSquare(of number: Int?) {
+    guard let number = number else {
+        print("Missing input")
+        return
+    }
+
+    print("\(number) x \(number) is \(number * number)")
+}
+Like if let, guard let checks whether there is a value inside an optional, and if there is it will retrieve the value and place it into a constant of our 
+choosing.
+
+However, the way it does so flips things around:
+
+var myVar: Int? = 3
+
+if let unwrapped = myVar {
+    print("Run if myVar has a value inside")
+}
+
+guard let unwrapped = myVar else {
+    print("Run if myVar doesn't have a value inside")
+}
+So, if let runs the code inside its braces if the optional had a value, and guard let runs the code inside its braces if the optional didn’t have a value. 
+This explains the use of else in the code: “check that we can unwrap the optional, but if we can’t then…”
+
+I realize that sounds like a small difference, but it has important ramifications. You see, what guard provides is the ability to check whether our program 
+state is what we expect, and if it isn’t to bail out – to exit from the current function, for example.
+
+This is sometimes called an early return: we check that all a function’s inputs are valid right as the function starts, and if any aren’t valid we get to 
+run some code then exit straight away. If all our checks pass, our function can run exactly as intended.
+
+guard is designed exactly for this style of programming, and in fact does two things to help:
+
+If you use guard to check a function’s inputs are valid, Swift will always require you to use return if the check fails.
+If the check passes and the optional you’re unwrapping has a value inside, you can use it after the guard code finishes.
+You can see both of these points in action if you look at the printSquare() function from earlier:
+
+func printSquare(of number: Int?) {
+    guard let number = number else {
+        print("Missing input")
+
+        // 1: We *must* exit the function here
+        return
+    }
+
+    // 2: `number` is still available outside of `guard`
+    print("\(number) x \(number) is \(number * number)")
+}
+So: use if let to unwrap optionals so you can process them somehow, and use guard let to ensure optionals have something inside them and exit otherwise.
+
+Tip: You can use guard with any condition, including ones that don’t unwrap optionals. For example, you might use guard someArray.isEmpty else { return }.
+
+
+
+How to unwrap optionals with nil coalescing
+
+Wait… Swift has a third way of unwrapping optionals? Yep! And it’s really useful, too: it’s called the nil coalescing operator and it lets us unwrap an 
+optional and provide a default value if the optional was empty.
+
+Let’s rewind a bit:
+
+let captains = [
+    "Enterprise": "Picard",
+    "Voyager": "Janeway",
+    "Defiant": "Sisko"
+]
+
+let new = captains["Serenity"]
+That reads a non-existent key in our captains dictionary, which means new will be an optional string to set to nil.
+
+With the nil coalescing operator, written ??, we can provide a default value for any optional, like this:
+
+let new = captains["Serenity"] ?? "N/A"
+That will read the value from the captains dictionary and attempt to unwrap it. If the optional has a value inside it will be sent back and stored in new, 
+but if it doesn’t then “N/A” will be used instead.
+
+This means no matter what the optional contains – a value or nil – the end result is that new will be a real string, not an optional one. That might be the 
+string from inside the captains value, or it might be “N/A”.
+
+Now, I know what you’re thinking: can’t we just specify a default value when reading from the dictionary? If you’re thinking that you’re absolutely correct:
+
+let new = captains["Serenity", default: "N/A"]
+That produces exactly the same result, which might make it seem like the nil coalescing operator is pointless. However, not only does the nil coalescing 
+operator work with dictionaries, but it works with any optionals.
+
+For example, the randomElement() method on arrays returns one random item from the array, but it returns an optional because you might be calling it on an 
+empty array. So, we can use nil coalescing to provide a default:
+
+let tvShows = ["Archer", "Babylon 5", "Ted Lasso"]
+let favorite = tvShows.randomElement() ?? "None"
+Or perhaps you have a struct with an optional property, and want to provide a sensible default for when it’s missing:
+
+struct Book {
+    let title: String
+    let author: String?
+}
+
+let book = Book(title: "Beowulf", author: nil)
+let author = book.author ?? "Anonymous"
+print(author)
+It’s even useful if you create an integer from a string, where you actually get back an optional Int? because the conversion might have failed – you might 
+have provided an invalid integer, such as “Hello”. Here we can use nil coalescing to provide a default value, like this:
+
+let input = ""
+let number = Int(input) ?? 0
+print(number)
+As you can see, the nil coalescing operator is useful anywhere you have an optional and want to use the value inside or provide a default value if it’s missing.
+
+
+
+How to handle multiple optionals using optional chaining
+
+Optional chaining is a simplified syntax for reading optionals inside optionals. That might sound like something you’d want to use rarely, but if I show you 
+an example you’ll see why it’s helpful.
+
+Take a look at this code:
+
+let names = ["Arya", "Bran", "Robb", "Sansa"]
+
+let chosen = names.randomElement()?.uppercased() ?? "No one"
+print("Next in line: \(chosen)")
+That uses two optional features at once: you’ve already seen how the nil coalescing operator helps provide a default value if an optional is empty, but 
+before that you see optional chaining where we have a question mark followed by more code.
+
+Optional chaining allows us to say “if the optional has a value inside, unwrap it then…” and we can add more code. In our case we’re saying “if we managed 
+to get a random element from the array, then uppercase it.” Remember, randomElement() returns an optional because the array might be empty.
+
+The magic of optional chaining is that it silently does nothing if the optional was empty – it will just send back the same optional you had before, still 
+empty. This means the return value of an optional chain is always an optional, which is why we still need nil coalescing to provide a default value.
+
+Optional chains can go as long as you want, and as soon as any part sends back nil the rest of the line of code is ignored and sends back nil.
+
+To give you an example that pushes optional chaining harder, imagine this: we want to place books in alphabetical order based on their author names. 
+If we break this right down, then:
+
+We have an optional instance of a Book struct – we might have a book to sort, or we might not.
+The book might have an author, or might be anonymous.
+If it does have an author string present, it might be an empty string or have text, so we can’t always rely on the first letter being there.
+If the first letter is there, make sure it’s uppercase so that authors with lowercase names such as bell hooks are sorted correctly.
+
+Here’s how that would look:
+
+struct Book {
+    let title: String
+    let author: String?
+}
+
+var book: Book? = nil
+let author = book?.author?.first?.uppercased() ?? "A"
+print(author)
+
+So, it reads “if we have a book, and the book has an author, and the author has a first letter, then uppercase it and send it back, otherwise send back A”.
+
+Admittedly it’s unlikely you’ll ever dig that far through optionals, but I hope you can see how delightfully short the syntax is!
+
+
+
