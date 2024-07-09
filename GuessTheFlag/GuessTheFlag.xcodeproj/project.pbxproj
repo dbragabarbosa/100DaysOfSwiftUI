@@ -11,6 +11,7 @@
 		ED277C7C2C29A4ED00F2DA8A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED277C7B2C29A4ED00F2DA8A /* ContentView.swift */; };
 		ED277C7E2C29A4F000F2DA8A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED277C7D2C29A4F000F2DA8A /* Assets.xcassets */; };
 		ED277C812C29A4F000F2DA8A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED277C802C29A4F000F2DA8A /* Preview Assets.xcassets */; };
+		ED61F0A92C3D65F80027EC75 /* ExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED61F0A82C3D65F80027EC75 /* ExamplesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		ED277C7B2C29A4ED00F2DA8A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		ED277C7D2C29A4F000F2DA8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ED277C802C29A4F000F2DA8A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		ED61F0A82C3D65F80027EC75 /* ExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamplesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			children = (
 				ED277C792C29A4ED00F2DA8A /* GuessTheFlagApp.swift */,
 				ED277C7B2C29A4ED00F2DA8A /* ContentView.swift */,
+				ED61F0A82C3D65F80027EC75 /* ExamplesView.swift */,
 				ED277C7D2C29A4F000F2DA8A /* Assets.xcassets */,
 				ED277C7F2C29A4F000F2DA8A /* Preview Content */,
 			);
@@ -137,6 +140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED61F0A92C3D65F80027EC75 /* ExamplesView.swift in Sources */,
 				ED277C7C2C29A4ED00F2DA8A /* ContentView.swift in Sources */,
 				ED277C7A2C29A4ED00F2DA8A /* GuessTheFlagApp.swift in Sources */,
 			);
