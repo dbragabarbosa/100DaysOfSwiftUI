@@ -14,8 +14,18 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+                .padding()
+                .background(.cyan)
+                .padding()
+                .background(.blue)
+                .padding()
+                .background(.green)
+                .padding()
+                .background(.yellow)
         }
-        .padding()
+//        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.red)
     }
 }
 
