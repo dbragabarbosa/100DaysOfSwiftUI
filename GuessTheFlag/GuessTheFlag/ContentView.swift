@@ -35,6 +35,7 @@ struct ContentView: View
                 Text("Guess the flag")
                     .font(.largeTitle.weight(.bold))
                     .foregroundStyle(.white)
+                    .largeBlueTitle()
 
                 VStack(spacing: 15)
                 {
@@ -44,7 +45,6 @@ struct ContentView: View
                             .foregroundStyle(.secondary)
                             .font(.subheadline.weight(.heavy))
                         Text(countries[correctAnswer])
-//                            .foregroundStyle(.white)
                             .font(.largeTitle.weight(.semibold))
                     }
                     
@@ -57,9 +57,10 @@ struct ContentView: View
                         }
                     label:
                         {
-                            Image(countries[number])
-                                .clipShape(.capsule)
-                                .shadow(radius: 5)
+//                            Image(countries[number])
+//                                .clipShape(.capsule)
+//                                .shadow(radius: 5)
+                            FlagImage(name: countries[number])
                         }
                     }
                 }
@@ -110,6 +111,36 @@ struct ContentView: View
         correctAnswer = Int.random(in: 0...2)
     }
     
+}
+
+struct FlagImage: View
+{
+    var name: String
+    
+    var body: some View
+    {
+        Image(name)
+            .clipShape(.capsule)
+            .shadow(radius: 5)
+    }
+}
+
+struct LargeBlueTitle: ViewModifier
+{
+    func body(content: Content) -> some View 
+    {
+        content
+            .font(.largeTitle.weight(.bold))
+            .foregroundColor(.blue)
+    }
+}
+
+extension View
+{
+    func largeBlueTitle() -> some View
+    {
+        self.modifier(LargeBlueTitle())
+    }
 }
 
 #Preview {

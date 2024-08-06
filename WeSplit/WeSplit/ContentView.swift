@@ -40,6 +40,11 @@ struct ContentView: View
         return grandTotal
     }
     
+    var isTipZero: Bool
+    {
+        return tipPercentage == 0
+    }
+    
     var body: some View
     {
         NavigationStack
@@ -59,7 +64,6 @@ struct ContentView: View
                             Text("\($0) people")
                         }
                     }
-//                    .pickerStyle(.navigationLink)
                 }
                 
                 Section("How much tip do you want to leave?")
@@ -71,15 +75,7 @@ struct ContentView: View
                             Text($0, format: .percent)
                         }
                     }
-                    .pickerStyle(.segmented)                    
-//                    Picker("Tip percentage", selection: $tipPercentage)
-//                    {
-//                        ForEach(0..<101)
-//                        {
-//                            Text($0, format: .percent)
-//                        }
-//                    }
-//                    .pickerStyle(.navigationLink)
+                    .pickerStyle(.segmented)
                 }
                 
                 Section("Amount per person")
@@ -90,6 +86,7 @@ struct ContentView: View
                 Section("Total amout for the check")
                 {
                     Text(totalForCheck, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .foregroundStyle(isTipZero ? .red : .black)
                 }
             }
             .navigationTitle("WeSplit")
