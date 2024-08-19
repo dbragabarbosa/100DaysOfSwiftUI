@@ -9,17 +9,56 @@ import SwiftUI
 
 struct ContentView: View 
 {
-    var body: some View 
+    @State private var usedWords = [String]()
+    @State private var rootWord = ""
+    @State private var newWord = ""
+    
+    var body: some View
     {
-        VStack 
+        NavigationStack
         {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            List
+            {
+                Section
+                {
+                    TextField("Enter your word", text: $newWord)
+                        .textInputAutocapitalization(.never)
+                }
+                
+                Section
+                {
+                    ForEach(usedWords, id: \.self) { word in
+                        HStack
+                        {
+                            Image(systemName: "\(word.count).circle")
+                            Text(word)
+                        }
+                    }
+                }
+            }
+            .navigationTitle(rootWord)
+            .onSubmit(addNewWord)
         }
-        .padding()
     }
+    
+    func addNewWord()
+    {
+        // lowercase and trim the word, to make sure we don't add duplicate with case differences
+        let answer = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        // exit if the remaining string is empty
+        guard answer.count > 0 else { return }
+        
+        // extra validation
+        
+        withAnimation
+        {
+            usedWords.insert(answer, at: 0)
+        }
+        
+        newWord = ""
+    }
+    
 }
 
 #Preview {
