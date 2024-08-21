@@ -17,6 +17,8 @@ struct ContentView: View
     @State private var errorMessage = ""
     @State private var showingError = false
     
+    @State private var score: Int = 0
+    
     var body: some View
     {
         NavigationStack
@@ -27,6 +29,7 @@ struct ContentView: View
                 {
                     TextField("Enter your word", text: $newWord)
                         .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
                 }
                 
                 Section
@@ -47,6 +50,11 @@ struct ContentView: View
             message:
             {
                 Text(errorMessage)
+            }
+            .toolbar
+            {
+                Button("Restart", action: startGame)
+                Text("Score: \(score)")
             }
         }
     }
@@ -78,16 +86,31 @@ struct ContentView: View
             return
         }
         
+        guard isMoreThanThreeLetters(word: answer) else
+        {
+            wordError(title: "Word not accepted", message: "Your word don't have more than 3 letters")
+            return
+        }
+        
+        guard isNotTheStartWord(word: answer) else
+        {
+            wordError(title: "Word is equal the root", message: "Your word is equal the start word")
+            return
+        }
+        
         withAnimation
         {
             usedWords.insert(answer, at: 0)
         }
         
         newWord = ""
+        score += answer.count
     }
     
     func startGame()
     {
+        score = 0
+        
         if let startWordsURl = Bundle.main.url(forResource: "start", withExtension: "txt")
         {
             if let startWords = try? String(contentsOf: startWordsURl)
@@ -134,6 +157,27 @@ struct ContentView: View
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
         
         return misspelledRange.location == NSNotFound
+    }
+    
+    func isMoreThanThreeLetters(word: String) -> Bool
+    {
+        let countLetters = word.count
+        if countLetters < 4
+        {
+            return false
+        }
+        
+        return true
+    }
+    
+    func isNotTheStartWord(word: String) -> Bool
+    {
+        if word == rootWord
+        {
+            return false
+        }
+        
+        return true
     }
     
     func wordError(title: String, message: String)
