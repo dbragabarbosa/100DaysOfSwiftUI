@@ -14,6 +14,10 @@
 		EDE0510C2C7CF35A00E56ECE /* ContentViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE0510B2C7CF35A00E56ECE /* ContentViewTests.swift */; };
 		EDE0510E2C7E432100E56ECE /* AnimatingBindings.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE0510D2C7E432100E56ECE /* AnimatingBindings.swift */; };
 		EDE051102C7E461100E56ECE /* ExplicitAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE0510F2C7E461100E56ECE /* ExplicitAnimations.swift */; };
+		EDE051122C878D6A00E56ECE /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE051112C878D6A00E56ECE /* SwiftUIView.swift */; };
+		EDE051142C87923E00E56ECE /* AnimatingGestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE051132C87923E00E56ECE /* AnimatingGestures.swift */; };
+		EDE051162C879C3500E56ECE /* Transitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE051152C879C3500E56ECE /* Transitions.swift */; };
+		EDE051182C879EB200E56ECE /* CustomTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE051172C879EB200E56ECE /* CustomTransitions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +29,10 @@
 		EDE0510B2C7CF35A00E56ECE /* ContentViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewTests.swift; sourceTree = "<group>"; };
 		EDE0510D2C7E432100E56ECE /* AnimatingBindings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatingBindings.swift; sourceTree = "<group>"; };
 		EDE0510F2C7E461100E56ECE /* ExplicitAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitAnimations.swift; sourceTree = "<group>"; };
+		EDE051112C878D6A00E56ECE /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
+		EDE051132C87923E00E56ECE /* AnimatingGestures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatingGestures.swift; sourceTree = "<group>"; };
+		EDE051152C879C3500E56ECE /* Transitions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transitions.swift; sourceTree = "<group>"; };
+		EDE051172C879EB200E56ECE /* CustomTransitions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransitions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +68,10 @@
 				EDE050FD2C7CF33800E56ECE /* Project6App.swift */,
 				EDE050FF2C7CF33800E56ECE /* ContentView.swift */,
 				EDE0510B2C7CF35A00E56ECE /* ContentViewTests.swift */,
+				EDE051112C878D6A00E56ECE /* SwiftUIView.swift */,
+				EDE051132C87923E00E56ECE /* AnimatingGestures.swift */,
+				EDE051152C879C3500E56ECE /* Transitions.swift */,
+				EDE051172C879EB200E56ECE /* CustomTransitions.swift */,
 				EDE0510D2C7E432100E56ECE /* AnimatingBindings.swift */,
 				EDE0510F2C7E461100E56ECE /* ExplicitAnimations.swift */,
 				EDE051012C7CF33B00E56ECE /* Assets.xcassets */,
@@ -146,8 +158,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDE051182C879EB200E56ECE /* CustomTransitions.swift in Sources */,
 				EDE0510E2C7E432100E56ECE /* AnimatingBindings.swift in Sources */,
 				EDE0510C2C7CF35A00E56ECE /* ContentViewTests.swift in Sources */,
+				EDE051162C879C3500E56ECE /* Transitions.swift in Sources */,
+				EDE051142C87923E00E56ECE /* AnimatingGestures.swift in Sources */,
+				EDE051122C878D6A00E56ECE /* SwiftUIView.swift in Sources */,
 				EDE051002C7CF33800E56ECE /* ContentView.swift in Sources */,
 				EDE050FE2C7CF33800E56ECE /* Project6App.swift in Sources */,
 				EDE051102C7E461100E56ECE /* ExplicitAnimations.swift in Sources */,
