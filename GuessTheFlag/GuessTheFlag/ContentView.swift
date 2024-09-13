@@ -19,6 +19,9 @@ struct ContentView: View
     @State private var score: Int = 0
     @State private var countPlays: Int = 0
     
+    @State private var rotationDegrees = [0.0, 0.0, 0.0]
+    @State private var selectedFlag: Int? = nil
+    
     var body: some View
     {
         ZStack
@@ -54,14 +57,25 @@ struct ContentView: View
                         {
                             // flag was tapped
                             flagTapped(number)
+                            
+                            withAnimation
+                            {
+                                rotationDegrees[number] += 360
+                                selectedFlag = number
+                            }
                         }
                     label:
                         {
 //                            Image(countries[number])
 //                                .clipShape(.capsule)
 //                                .shadow(radius: 5)
-                            FlagImage(name: countries[number])
-                        }
+                            
+                              FlagImage(name: countries[number])
+                                  .rotation3DEffect(.degrees(rotationDegrees[number]), axis: (x: 0, y: 1, z: 0))
+                          }
+                        // Apply opacity: 1 for the selected flag, 0.25 for others
+                        .opacity(selectedFlag == nil || selectedFlag == number ? 1 : 0.25)
+                        .animation(.easeInOut(duration: 0.5), value: selectedFlag)
                     }
                 }
                 .frame(maxWidth: .infinity)
