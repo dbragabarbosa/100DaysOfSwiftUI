@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Observation
 
 //struct User
 //{
@@ -24,6 +25,8 @@ struct StateExample: View
 {
     @State private var user = User()
     
+    @State private var showingSheet = false
+    
     var body: some View
     {
         VStack
@@ -33,8 +36,39 @@ struct StateExample: View
             TextField("Primeiro nome", text: $user.firstName)
             TextField("Segundo nome", text: $user.lastName)
         }
+        
+        Spacer()
+        
+        Button("Show Sheet")
+        {
+            showingSheet.toggle()
+        }
+        .sheet(isPresented: $showingSheet)
+        {
+            SecondView(name: "Daniel")
+        }
     }
     
+}
+
+struct SecondView: View
+{
+    @Environment(\.dismiss) var dismiss
+    let name: String
+    
+    var body: some View
+    {
+        Spacer()
+        Text("Second View")
+        Spacer()
+        Text("Hello, \(name)!")
+        Spacer()
+        Button("Dismiss")
+        {
+            dismiss()
+        }
+        Spacer()
+    }
 }
 
 #Preview
