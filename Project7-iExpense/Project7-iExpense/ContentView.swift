@@ -46,8 +46,11 @@ class Expenses
 
 struct ContentView: View
 {
-    @State private var expenses = Expenses()
+    @State private var bussinessExpenses = Expenses()
+    @State private var personalExpenses = Expenses()
     @State private var showingAddExpense: Bool = false
+    
+    var currencyPreferred = Locale.current.currency?.identifier
     
     var body: some View
     {
@@ -55,7 +58,7 @@ struct ContentView: View
         {
             List
             {
-                ForEach(expenses.items)
+                ForEach(bussinessExpenses.items)
                 { item in
                     
                     HStack
@@ -68,31 +71,46 @@ struct ContentView: View
                         }
                         
                         Spacer()
-                        Text(item.amount, format: .currency(code: "USD"))
+                        
+                        showAmount(item: item)
                     }
                 }
-                .onDelete(perform: removeItems)
+                .onDelete(perform: removeItemsBussiness)
             }
             .navigationTitle("iExpense")
             .toolbar
             {
                 Button("Add Expense", systemImage: "plus")
                 {
-//                    let expense = ExpenseItem(name: "Test", type: "Personal", amount: 5)
-//                    expenses.items.append(expense)
                     showingAddExpense = true
                 }
             }
         }
         .sheet(isPresented: $showingAddExpense)
         {
-            AddView(expenses: expenses)
+            AddView(BusinessExpenses: bussinessExpenses, personalExpenses: personalExpenses, currencyPreferred: currencyPreferred ?? "USD")
         }
     }
     
-    func removeItems(at offsets: IndexSet)
+    func removeItemsBussiness(at offsets: IndexSet)
     {
-        expenses.items.remove(atOffsets: offsets)
+        bussinessExpenses.items.remove(atOffsets: offsets)
+    }
+    
+    func showAmount(item: ExpenseItem) -> Text
+    {
+        if item.amount > 100 {
+            return Text(item.amount, format: .currency(code: currencyPreferred ?? "USD"))
+                .fontWeight(.bold)
+        }
+        
+        if item.amount > 10 {
+            return Text(item.amount, format: .currency(code: currencyPreferred ?? "USD"))
+                .fontWeight(.semibold)
+        }
+        
+        return Text(item.amount, format: .currency(code: currencyPreferred ?? "USD"))
+            .fontWeight(.medium)
     }
 }
 

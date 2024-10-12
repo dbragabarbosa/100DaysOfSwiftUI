@@ -16,7 +16,9 @@ struct AddView: View
     @Environment(\.dismiss) var dismiss
     
     let types = ["Business", "Personal"]
-    var expenses: Expenses
+    var BusinessExpenses: Expenses
+    var personalExpenses: Expenses
+    var currencyPreferred: String
     
     var body: some View
     {
@@ -34,7 +36,7 @@ struct AddView: View
                     }
                 }
                 
-                TextField("Amount", value: $amount, format: .currency(code: "USD"))
+                TextField("Amount", value: $amount, format: .currency(code: currencyPreferred))
                     .keyboardType(.decimalPad)
             }
             .navigationTitle("Add new expense")
@@ -43,7 +45,12 @@ struct AddView: View
                 Button("Save")
                 {
                     let item = ExpenseItem(name: name, type: type, amount: amount)
-                    expenses.items.append(item)
+                    if item.type == "Business"{
+                        BusinessExpenses.items.append(item)
+                    }
+                    else {
+                        personalExpenses.items.append(item)
+                    }
                     dismiss()
                 }
             }
@@ -52,5 +59,5 @@ struct AddView: View
 }
 
 #Preview {
-    AddView(expenses: Expenses())
+    AddView(BusinessExpenses: Expenses(), personalExpenses: Expenses(), currencyPreferred: "BRL")
 }
