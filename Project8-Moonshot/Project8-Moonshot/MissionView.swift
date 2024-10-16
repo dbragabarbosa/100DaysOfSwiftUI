@@ -48,23 +48,23 @@ struct MissionView: View
                         width * 0.6
                     }
                     .padding(.top)
+                    .padding(.bottom)
+                
+                Text("Launch date: \(mission.formattedLaunchDate)")
+                    .font(.title2)
+                    .foregroundStyle(.white)
                 
                 VStack(alignment: .leading)
                 {
-                    Rectangle()
-                        .frame(height: 2)
-                        .foregroundStyle(.lightBackground)
-                        .padding(.vertical)
+                    MyDivider()
+                    
                     Text("Mission Highlights")
                         .font(.title.bold())
                         .padding(.bottom, 5)
                     
                     Text(mission.description)
                     
-                    Rectangle()
-                        .frame(height: 2)
-                        .foregroundStyle(.lightBackground)
-                        .padding(.vertical)
+                    MyDivider()
                     
                     Text("Crew")
                         .font(.title.bold())
@@ -72,7 +72,8 @@ struct MissionView: View
                 }
                 .padding(.horizontal)
                 
-                ScrollView(.horizontal, showsIndicators: false) {
+                ScrollView(.horizontal, showsIndicators: false)
+                {
                     HStack
                     {
                         ForEach(crew, id: \.role)
@@ -99,6 +100,7 @@ struct MissionView: View
                                         Text(crewMember.astronaut.name)
                                             .foregroundStyle(.white)
                                             .font(.headline)
+                                        
                                         Text(crewMember.role)
                                             .foregroundStyle(.white.opacity(0.5))
                                     }
@@ -117,6 +119,26 @@ struct MissionView: View
         .background(.darkBackground)
     }
 }
+
+struct MyDivider: View
+{
+    var body: some View
+    {
+        Rectangle()
+            .frame(height: 2)
+            .foregroundStyle(.lightBackground)
+            .padding(.vertical)
+    }
+}
+
+struct HorizontalScrollView: View
+{
+    var body: some View
+    {
+        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
+    }
+}
+
 
 #Preview
 {
