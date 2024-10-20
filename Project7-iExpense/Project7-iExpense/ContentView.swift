@@ -80,16 +80,21 @@ struct ContentView: View
             .navigationTitle("iExpense")
             .toolbar
             {
-                Button("Add Expense", systemImage: "plus")
+//                Button("Add Expense", systemImage: "plus")
+//                {
+//                    showingAddExpense = true
+//                }
+                
+                NavigationLink(destination: AddView(BusinessExpenses: bussinessExpenses, personalExpenses: personalExpenses, currencyPreferred: currencyPreferred ?? "USD"))
                 {
-                    showingAddExpense = true
+                    Label("Add Expense", systemImage: "plus")
                 }
             }
         }
-        .sheet(isPresented: $showingAddExpense)
-        {
-            AddView(BusinessExpenses: bussinessExpenses, personalExpenses: personalExpenses, currencyPreferred: currencyPreferred ?? "USD")
-        }
+//        .sheet(isPresented: $showingAddExpense)
+//        {
+//            AddView(BusinessExpenses: bussinessExpenses, personalExpenses: personalExpenses, currencyPreferred: currencyPreferred ?? "USD")
+//        }
     }
     
     func removeItemsBussiness(at offsets: IndexSet)
@@ -114,6 +119,7 @@ struct ContentView: View
     }
 }
 
-#Preview {
+#Preview
+{
     ContentView()
 }

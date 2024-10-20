@@ -12,6 +12,7 @@ struct AddView: View
     @State private var name = ""
     @State private var type = "Personal"
     @State private var amount = 0.0
+    @State private var issueName: String = "Issue name"
     
     @Environment(\.dismiss) var dismiss
     
@@ -26,7 +27,7 @@ struct AddView: View
         {
             Form
             {
-                TextField("Name", text: $name)
+//                TextField("Name", text: $name)
                 
                 Picker("Type", selection: $type)
                 {
@@ -39,12 +40,13 @@ struct AddView: View
                 TextField("Amount", value: $amount, format: .currency(code: currencyPreferred))
                     .keyboardType(.decimalPad)
             }
-            .navigationTitle("Add new expense")
+            .navigationTitle($issueName)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar
             {
                 Button("Save")
                 {
-                    let item = ExpenseItem(name: name, type: type, amount: amount)
+                    let item = ExpenseItem(name: issueName, type: type, amount: amount)
                     if item.type == "Business"{
                         BusinessExpenses.items.append(item)
                     }
@@ -54,6 +56,7 @@ struct AddView: View
                     dismiss()
                 }
             }
+//            .navigationBarBackButtonHidden()
         }
     }
 }
