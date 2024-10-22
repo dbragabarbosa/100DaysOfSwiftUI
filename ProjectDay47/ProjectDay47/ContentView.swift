@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct Activity: Identifiable
+struct Activity: Identifiable, Codable
 {
-    let id = UUID()
+    var id = UUID()
     let name: String
     let description: String
     let count: Int
@@ -19,11 +19,35 @@ struct Activity: Identifiable
 class AllActivities
 {
     var activities = [Activity]()
+    {
+        didSet
+        {
+            if let encoded = try? JSONEncoder().encode(activities)
+            {
+                UserDefaults.standard.set(encoded, forKey: "Activities")
+            }
+        }
+    }
+    
+    init()
+    {
+        if let savedActivities = UserDefaults.standard.data(forKey: "Activities")
+        {
+            if let decodedActivities = try? JSONDecoder().decode([Activity].self, from: savedActivities)
+            {
+                activities = decodedActivities
+                return
+            }
+        }
+        
+        activities = []
+    }
 }
 
 struct ContentView: View
 {
     @State private var allActivities = AllActivities()
+    @State private var showingAddActivity = false
     
     var body: some View
     {
@@ -33,19 +57,30 @@ struct ContentView: View
             {
                 ForEach(allActivities.activities)
                 { activity in
-                    Text(activity.name)
+                    HStack
+                    {
+                        VStack(alignment: .leading)
+                        {
+                            Text(activity.name)
+                                .font(.headline)
+                            Text(activity.description)
+                        }
+                    }
                 }
                 .onDelete(perform: removeActivity)
             }
+            .navigationTitle("Habit Tracking")
             .toolbar
             {
                 Button("Add activity", systemImage: "plus")
                 {
-                    let activity = Activity(name: "Test", description: "Teste", count: 3)
-                    allActivities.activities.append(activity)
+                    showingAddActivity = true
                 }
             }
-            .navigationTitle("Habit Tracking")
+            .sheet(isPresented: $showingAddActivity)
+            {
+                AddActivityView(activities: allActivities)
+            }
         }
     }
     
