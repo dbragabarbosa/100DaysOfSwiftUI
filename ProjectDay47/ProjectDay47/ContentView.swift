@@ -57,14 +57,20 @@ struct ContentView: View
             {
                 ForEach(allActivities.activities)
                 { activity in
-                    HStack
+//                    NavigationLink(destination: ActivityDetailView(activity: activity))
+                    NavigationLink(activity.name)
                     {
-                        VStack(alignment: .leading)
-                        {
-                            Text(activity.name)
-                                .font(.headline)
-                            Text(activity.description)
-                        }
+                        ActivityDetailView(activity: activity)
+                        
+//                        HStack
+//                        {
+//                            VStack(alignment: .leading)
+//                            {
+//                                Text(activity.name)
+//                                    .font(.headline)
+//                                Text(activity.description)
+//                            }
+//                        }
                     }
                 }
                 .onDelete(perform: removeActivity)
@@ -90,6 +96,7 @@ struct ContentView: View
     }
 }
 
-#Preview {
+#Preview
+{
     ContentView()
 }
