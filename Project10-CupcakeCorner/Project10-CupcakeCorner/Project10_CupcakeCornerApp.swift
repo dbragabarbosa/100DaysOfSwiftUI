@@ -11,8 +11,8 @@ import SwiftUI
 struct Project10_CupcakeCornerApp: App {
     var body: some Scene {
         WindowGroup {
-//            ContentView()
-            HapticEffects()
+            ContentView()
+//            HapticEffects()
         }
     }
 }
