@@ -14,6 +14,9 @@ struct CheckoutView: View
     @State private var confirmationMessage = ""
     @State private var showingConfirmation = false
     
+    @State private var alertMessage = "Ocorreu um erro ao tentar fazer o pedido."
+    @State private var showAlert = false
+    
     var body: some View
     {
         ScrollView
@@ -37,10 +40,20 @@ struct CheckoutView: View
                 {
                     Task
                     {
-                        await placeOrder()
+                        do
+                        {
+                            try await placeOrder()
+                        } catch {
+                            showAlert = true
+                        }
                     }
                 }
-                    .padding()
+                .padding()
+            }
+            .alert("Erro", isPresented: $showAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(alertMessage)
             }
         }
         .navigationTitle("Check out")
@@ -54,7 +67,7 @@ struct CheckoutView: View
         }
     }
     
-    func placeOrder() async
+    func placeOrder() async throws
     {
         guard let encoded = try? JSONEncoder().encode(order) else
         {
@@ -65,7 +78,7 @@ struct CheckoutView: View
         let url = URL(string: "https://reqres.in/api/cupcakes")!
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
+//        request.httpMethod = "POST"
         
         do
         {

@@ -55,6 +55,11 @@ class Order: Codable
             return false
         }
         
+        if streetAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        {
+            return false
+        }
+        
         return true
     }
     
