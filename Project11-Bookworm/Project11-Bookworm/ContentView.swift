@@ -6,19 +6,60 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View
 {
+    @Environment(\.modelContext) var modelContext
+    @Query var books: [Book]
+    
+    @State private var showingAddScreen = false
+    
     var body: some View
     {
-        VStack
+        NavigationStack
         {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+//            Text("Count: \(books.count)")
+            
+            List
+            {
+                ForEach(books)
+                { book in
+                    NavigationLink(value: book)
+                    {
+                        HStack
+                        {
+                            EmojiRatingView(rating: book.rating)
+                                .font(.largeTitle)
+                            
+                            VStack(alignment: .leading)
+                            {
+                                Text(book.title)
+                                    .font(.headline)
+                                Text(book.author)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+            }
+            
+            
+                .navigationTitle("Bookworm")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing)
+                    {
+                        Button("Add book", systemImage: "plus")
+                        {
+                            showingAddScreen.toggle()
+                        }
+                    }
+                }
         }
-        .padding()
+        .sheet(isPresented: $showingAddScreen)
+        {
+            AddBookView()
+        }
     }
 }
 
