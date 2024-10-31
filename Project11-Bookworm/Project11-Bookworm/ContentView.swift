@@ -11,7 +11,11 @@ import SwiftData
 struct ContentView: View
 {
     @Environment(\.modelContext) var modelContext
-    @Query var books: [Book]
+    
+    @Query(sort: [
+        SortDescriptor(\Book.rating, order: .reverse),
+        SortDescriptor(\Book.author)
+    ]) var books: [Book]
     
     @State private var showingAddScreen = false
     
@@ -19,8 +23,6 @@ struct ContentView: View
     {
         NavigationStack
         {
-//            Text("Count: \(books.count)")
-            
             List
             {
                 ForEach(books)
@@ -42,25 +44,46 @@ struct ContentView: View
                         }
                     }
                 }
+                .onDelete(perform: deleteBooks)
             }
-            
-            
-                .navigationTitle("Bookworm")
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing)
+            .navigationTitle("Bookworm")
+            .navigationDestination(for: Book.self)
+            { book in
+                DetailView(book: book)
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing)
+                {
+                    Button("Add book", systemImage: "plus")
                     {
-                        Button("Add book", systemImage: "plus")
-                        {
-                            showingAddScreen.toggle()
-                        }
+                        showingAddScreen.toggle()
                     }
                 }
+                
+                ToolbarItem(placement: .topBarLeading)
+                {
+                    EditButton()
+                }
+            }
         }
         .sheet(isPresented: $showingAddScreen)
         {
             AddBookView()
         }
     }
+    
+    func deleteBooks(at offsets: IndexSet)
+    {
+        for offset in offsets
+        {
+            // find the book in the query
+            let book = books[offset]
+            
+            // delete it from the context
+            modelContext.delete(book)
+        }
+    }
+    
 }
 
 #Preview
