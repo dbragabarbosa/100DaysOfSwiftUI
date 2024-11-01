@@ -36,6 +36,15 @@ struct ContentView: View
                             
                             VStack(alignment: .leading)
                             {
+                                if book.rating == 1
+                                {
+                                    Text(book.title)
+                                        .font(.headline)
+                                        .background(.red)
+                                    Text(book.author)
+                                        .foregroundStyle(.secondary)
+                                }
+                                
                                 Text(book.title)
                                     .font(.headline)
                                 Text(book.author)
