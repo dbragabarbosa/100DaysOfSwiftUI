@@ -11,6 +11,14 @@ import SwiftData
 struct FilteringQueryUsingPredicate: View
 {
     @Environment(\.modelContext) var modelContext
+    
+    @State private var showingUpcomingOnly = false
+    
+    @State private var sortOrder = [
+        SortDescriptor(\User.name),
+        SortDescriptor(\User.joinDate),
+    ]
+    
     @Query(sort: \User.name) var users: [User]
     
     @Query(filter: #Predicate<User> { user in
@@ -44,10 +52,11 @@ struct FilteringQueryUsingPredicate: View
     {
         NavigationStack
         {
-            List(users)
-            { user in
-                Text(user.name)
-            }
+//            List(users)
+//            { user in
+//                Text(user.name)
+//            }
+            UsersView(minimumJoinDate: showingUpcomingOnly ? .now : .distantPast, sortOrder: sortOrder)
             .navigationTitle("Users")
             .toolbar
             {
@@ -64,6 +73,29 @@ struct FilteringQueryUsingPredicate: View
                     modelContext.insert(second)
                     modelContext.insert(third)
                     modelContext.insert(fourth)
+                }
+                
+                
+                Button(showingUpcomingOnly ? "Show Everyone" : "Show Upcoming")
+                {
+                    showingUpcomingOnly.toggle()
+                }
+                
+                Menu("Sort", systemImage: "arrow.up.arrow.down") {
+                    Picker("Sort", selection: $sortOrder)
+                    {
+                        Text("Sort by Name")
+                            .tag([
+                                SortDescriptor(\User.name),
+                                SortDescriptor(\User.joinDate),
+                            ])
+                        
+                        Text("Sort by Join Date")
+                            .tag([
+                                SortDescriptor(\User.joinDate),
+                                SortDescriptor(\User.name)
+                            ])
+                    }
                 }
             }
         }
