@@ -52,8 +52,8 @@ struct ContentView: View
     @State private var personalExpenses = Expenses()
     @State private var showingAddExpense: Bool = false
     
-    @Environment(\.modelContext) var modelContext
-    @Query(sort: \Expenses.items)
+//    @Environment(\.modelContext) var modelContext
+//    @Query(sort: \Expenses.items)
     
     var currencyPreferred = Locale.current.currency?.identifier
     
