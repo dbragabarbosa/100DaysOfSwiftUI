@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Observation
+import SwiftData
 
 //struct User
 //{
@@ -14,11 +15,18 @@ import Observation
 //    var lastName = "Braga"
 //}
 
-@Observable
+//@Observable
+@Model
 class User
 {
     var firstName = "Daniel"
-        var lastName = "Braga"
+    var lastName = "Braga"
+    
+    init(firstName: String = "Daniel", lastName: String = "Braga")
+    {
+        self.firstName = firstName
+        self.lastName = lastName
+    }
 }
 
 struct StateExample: View

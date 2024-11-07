@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ExpenseItem: Identifiable, Codable
 {
@@ -15,7 +16,8 @@ struct ExpenseItem: Identifiable, Codable
     let amount: Double
 }
 
-@Observable
+//@Observable
+@Model
 class Expenses
 {
     var items: [ExpenseItem] = []
@@ -49,6 +51,9 @@ struct ContentView: View
     @State private var bussinessExpenses = Expenses()
     @State private var personalExpenses = Expenses()
     @State private var showingAddExpense: Bool = false
+    
+    @Environment(\.modelContext) var modelContext
+    @Query(sort: \Expenses.items)
     
     var currencyPreferred = Locale.current.currency?.identifier
     
