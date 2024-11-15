@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct UserWithDetailView: View
 {
@@ -39,12 +40,29 @@ struct UserWithDetailView: View
     }
 }
 
-#Preview
-{
-    let friendsTest1: FriendInfo = FriendInfo(id: "2", name: "Jose")
-    let friendsTest2: FriendInfo = FriendInfo(id: "3", name: "Maria")
+//#Preview
+//{
+//    let friendsTest1: FriendInfo = FriendInfo(id: "2", name: "Jose")
+//    let friendsTest2: FriendInfo = FriendInfo(id: "3", name: "Maria")
+//    
+//    let userTest: UserInfo = UserInfo(id: "1", isActive: true, name: "Daniel", age: 23, company: "Inter", email: "dbragabarbosa@gmail.com", address: "BH", about: "Galo", registered: "10/11/2024", tags: ["um", "dois"], friends: [friendsTest1, friendsTest2])
+//    
+//    UserWithDetailView(user: userTest)
     
-    let userTest: UserInfo = UserInfo(id: "1", isActive: true, name: "Daniel", age: 23, company: "Inter", email: "dbragabarbosa@gmail.com", address: "BH", about: "Galo", registered: "10/11/2024", tags: ["um", "dois"], friends: [friendsTest1, friendsTest2])
     
-    UserWithDetailView(user: userTest)
-}
+    
+//    do {
+//        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+//        let container = try ModelContainer(for: UserInfo.self, configurations: config)
+//        
+//        let friendsTest1: FriendInfo = FriendInfo(id: "2", name: "Jose")
+//        let friendsTest2: FriendInfo = FriendInfo(id: "3", name: "Maria")
+//        
+//        let userTest: UserInfo = UserInfo(id: "1", isActive: true, name: "Daniel", age: 23, company: "Inter", email: "dbragabarbosa@gmail.com", address: "BH", about: "Galo", registered: "10/11/2024", tags: ["um", "dois"], friends: [friendsTest1, friendsTest2])
+//
+//        return UserWithDetailView(user: userTest)
+//            .modelContainer(container)
+//    } catch {
+//        return Text("Failed to create preview: \(error.localizedDescription)")
+//    }
+//}

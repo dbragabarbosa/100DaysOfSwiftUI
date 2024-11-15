@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
-struct ProjectDay60App: App {
-    var body: some Scene {
-        WindowGroup {
+struct ProjectDay60App: App
+{
+    var body: some Scene
+    {
+        WindowGroup
+        {
             ContentView()
         }
+        .modelContainer(for: UserInfo.self)
+        .modelContainer(for: FriendInfo.self)
     }
 }
