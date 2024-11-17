@@ -88,3 +88,52 @@ Still with me? Now let’s go a stage further: you’ve just seen how State wrap
 So, changing the property directly using a button works fine, because it goes through the nonmutating setter and triggers the didSet observer, but using a binding doesn’t because it bypasses the setter and adjusts the value directly.
 
 How then can we solve this – how can we ensure some code is run whenever a binding is changed, no matter how that change happens? Well, there’s a modifier just for that purpose…
+
+
+Responding to state changes using onChange()
+
+Because of the way SwiftUI sends binding updates to property wrappers, property observers used with property wrappers often won’t work the way you expect, which means this kind of code won’t print anything even as the blur radius changes:
+
+struct ContentView: View {
+    @State private var blurAmount = 0.0 {
+        didSet {
+            print("New value is \(blurAmount)")
+        }
+    }
+
+    var body: some View {
+        VStack {
+            Text("Hello, World!")
+                .blur(radius: blurAmount)
+
+            Slider(value: $blurAmount, in: 0...20)
+        }
+    }
+}
+To fix this we need to use the onChange() modifier, which tells SwiftUI to run a function of our choosing when a particular value changes. SwiftUI will automatically pass in both the old and new value to whatever function you attach, so we'd use it like this:
+
+struct ContentView: View {
+    @State private var blurAmount = 0.0
+
+    var body: some View {
+        VStack {
+            Text("Hello, World!")
+                .blur(radius: blurAmount)
+
+            Slider(value: $blurAmount, in: 0...20)
+                .onChange(of: blurAmount) { oldValue, newValue in
+                    print("New value is \(newValue)")
+                }
+        }
+    }
+}
+Now that code will correctly print out values as the slider changes, because onChange() is watching it. Notice how most other things have stayed the same: we still use @State private var to declare the blurAmount property, and we still use blur(radius: blurAmount) as the modifier for our text view.
+
+Tip: You can attach onChange() wherever you want in your view hierarchy, but I prefer to put it near the thing that's actually changing.
+
+What all this means is that you can do whatever you want inside the onChange() function: you can call methods, run an algorithm to figure out how to apply the change, or whatever else you might need.
+
+The onChange() modifier has two other common variants:
+
+One that accepts no parameters at all, for times when you just want to run a function when a value changes but you don't actually care what the new value is.
+One that accepts only the new value, without also passing in the old value. This is deprecated as of iOS 17, which is Apple's way of saying "please don't use this unless you need to support iOS 16 and earlier."
