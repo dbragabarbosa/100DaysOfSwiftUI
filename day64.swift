@@ -95,3 +95,55 @@ And the last way is to limit the kinds of pictures that can be imported. We've u
 PhotosPicker(selection: $pickerItems, maxSelectionCount: 3, matching: .any(of: [.images, .not(.screenshots)])) {
     Label("Select a picture", systemImage: "photo")
 }
+
+How to let the user share content with ShareLink
+
+SwiftUI's ShareLink view lets users export content from our app to share elsewhere, such as saving a picture to their photo library, sending a link to a friend using Messages, and more.
+
+We provide the content we want to share, and iOS takes care of showing all the apps that can handle the data we're sending. For example, we can share a URL like this:
+
+ShareLink(item: URL(string: "https://www.hackingwithswift.com")!)
+That's going to make a button saying "Share" with an icon attached to it, and pressing it will bring up the iOS share sheet. If you're in the simulator you'll only see a few things there as samples, and some might not even work, but if you use a real device you'll see you can share that URL just fine.
+
+If you want more control over the data, you have several options.
+
+First, you can attach a subject and message to the shared data like this:
+
+ShareLink(item: URL(string: "https://www.hackingwithswift.com")!, subject: Text("Learn Swift here"), message: Text("Check out the 100 Days of SwiftUI!"))
+How that information is used depends on the app users share to – the URL will always be attached, because that's the most important thing, but some apps will use the subject, some the message, and others will use both.
+
+Second, you can customize the button itself by providing whatever label you want:
+
+ShareLink(item: URL(string: "https://www.hackingwithswift.com")!) {
+    Label("Spread the word about Swift", systemImage: "swift")
+}
+And third, you can provide a preview to attach, which is important when you're sharing something more complex – it's possible to share entirely custom data here, so the preview is helpful for giving the recipient some idea of what's inside.
+
+Annoyingly, this is needed even for data that is its own preview, such as an image. To avoid making your code repetitive, I'd suggest assigning the image to a local constant then using that:
+
+let example = Image(.example)
+
+ShareLink(item: example, preview: SharePreview("Singapore Airport", image: example)) {
+    Label("Click to share", systemImage: "airplane")
+}
+Letting users share data from your app is really important, because without it your data can feel quite isolated from the rest of their life!
+
+
+How to ask the user to leave an App Store review
+
+SwiftUI provides a special environment key called .requestReview, which lets us ask the user to leave a review for our app on the App Store. Apple takes care of showing the whole user interface, making sure it doesn't get shown if the user has already left a review, and also limiting how often the request can be shown – we just need to make a request when we're ready.
+
+This process takes three steps, starting with a new import for StoreKit:
+
+import StoreKit
+Second, you need to add a property to read the review requester from SwiftUI's environment:
+
+@Environment(\.requestReview) var requestReview
+And third, you need to request a review when you're ready. When you're just starting out, you might think attaching the review to a button press is a good idea, like this:
+
+Button("Leave a review") {
+    requestReview()
+}
+However, that's far from ideal, not least because we're only requesting that a review prompt be shown – the user might have disabled these alerts system-wide, or they might already have reached the maximum number of review requests allowed, in which case your button would do nothing.
+
+Instead, it's better to call requestReview() automatically when you think it's the right time. A good starting place is when the user has performed an important task some number of times, because that way it's clear they have realized the benefit of your app.
