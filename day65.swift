@@ -70,3 +70,45 @@ Button("Change Filter", action: changeFilter)
 When you’re learning it’s very common to write button actions and similar directly inside your views, but once you get onto real projects it’s a good idea to spend extra time keeping your code cleaned up – it makes your life easier in the long term, trust me!
 
 I’ll be adding more little cleanup tips like this going forward, so as you start to approach the end of the course you feel increasingly confident that your code is in good shape.
+
+
+Importing an image into SwiftUI using PhotosPicker
+
+In order to bring this project to life, we need to let the user select a photo from their library, then display it in ContentView. This takes a little thinking, mostly because of the roundabout way Core Image works compared to SwiftUI.
+
+First we need to add an import for PhotosUI to the top of ContentView, then give it an extra @State property to track whatever picture the user selected:
+
+@State private var selectedItem: PhotosPickerItem?
+Second, we need to place a PhotosPicker view wherever we want to trigger an image selection. In this app, we can actually place one around the whole if let processedImage check – we can use the selected image or the ContentUnavailableView as the label for our PhotosPicker.
+
+Here's how that looks:
+
+PhotosPicker(selection: $selectedItem) {
+    if let processedImage {
+        processedImage
+            .resizable()
+            .scaledToFit()
+    } else {
+        ContentUnavailableView("No Picture", systemImage: "photo.badge.plus", description: Text("Import a photo to get started"))
+    }
+}
+Tip: That adds blue coloring to the ContentUnavailableView to signal that's interactive, but you can disable that by adding .buttonStyle(.plain) to the PhotosPicker if you prefer.
+
+Third, we need a method that will be called when the an image has been selected.
+
+Previously I showed you how how we can load data from a PhotosPicker selection, and separately I also showed you how to feed a UIImage into Core Image for filtering. Here we need to kind of bolt those two things together: we can't load a simple SwiftUI image because they can't be fed into Core Image, so instead we load a pure Data object and convert that to a UIImage.
+
+Add this method to ContentView now:
+
+func loadImage() {
+    Task {
+        guard let imageData = try await selectedItem?.loadTransferable(type: Data.self) else { return }
+        guard let inputImage = UIImage(data: imageData) else { return }
+
+        // more code to come
+    }
+}
+We can then call that whenever our selectedItem property changes, by attaching an onChange() modifier somewhere in ContentView – it really doesn’t matter where, but attaching it to the PhotosPicker would seem sensible.
+
+.onChange(of: selectedItem, loadImage)
+Go ahead and run the app again – although it won't actually do much with your selection, you can at least bring up the photo selection UI and browse through the options.
