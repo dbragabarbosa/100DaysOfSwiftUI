@@ -28,8 +28,8 @@ struct CoreImageWithSwiftUI: View
     {
 //        image = Image(.DVS)
         
-        let inputImage = UIImage(resource: .DVS)
-        let beginImage = CIImage(image: inputImage)
+//        let inputImage = UIImage(resource: .DVS)
+//        let beginImage = CIImage(image: inputImage)
         
         let context = CIContext()
         
@@ -51,7 +51,7 @@ struct CoreImageWithSwiftUI: View
 //        currentFilter.center = CGPoint(x: inputImage.size.width / 2, y: inputImage.size.height / 2)
         
         let currentFilter = CIFilter.twirlDistortion()
-        currentFilter.inputImage = beginImage
+//        currentFilter.inputImage = beginImage
         let amount = 1.0
         let inputKeys = currentFilter.inputKeys
         if inputKeys.contains(kCIInputIntensityKey) {
