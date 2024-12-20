@@ -49,13 +49,16 @@ struct ContentView: View
                 
                 Spacer()
                 
-                HStack
+                if let processedImage
                 {
-                    Text("Intensity")
-                    Slider(value: $filterIntensity)
-                        .onChange(of: filterIntensity, applyProcessing)
+                    HStack
+                    {
+                        Text("Intensity")
+                        Slider(value: $filterIntensity)
+                            .onChange(of: filterIntensity, applyProcessing)
+                    }
+                    .padding(.vertical)
                 }
-                .padding(.vertical)
                 
                 HStack
                 {
