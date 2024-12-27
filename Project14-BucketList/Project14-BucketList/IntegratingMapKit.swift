@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct Location: Identifiable
+struct LocationModel: Identifiable
 {
     let id = UUID()
     var name: String
@@ -25,8 +25,8 @@ struct IntegratingMapKit: View
     )
     
     let locations = [
-        Location(name: "Buckingham Palace", coordinate: CLLocationCoordinate2D(latitude: 51.501, longitude: -0.141)),
-        Location(name: "Tower of London", coordinate: CLLocationCoordinate2D(latitude: 51.508, longitude: -0.076))
+        LocationModel(name: "Buckingham Palace", coordinate: CLLocationCoordinate2D(latitude: 51.501, longitude: -0.141)),
+        LocationModel(name: "Tower of London", coordinate: CLLocationCoordinate2D(latitude: 51.508, longitude: -0.076))
     ]
     
     var body: some View
@@ -79,11 +79,11 @@ struct IntegratingMapKit: View
         
         
 //        Map {
-//            ForEach(locations) { location in
-////                Marker(location.name, coordinate: location.coordinate)
+//            ForEach(locations) { LocationModel in
+////                Marker(LocationModel.name, coordinate: LocationModel.coordinate)
 //                
-//                Annotation(location.name, coordinate: location.coordinate) {
-//                    Text(location.name)
+//                Annotation(LocationModel.name, coordinate: LocationModel.coordinate) {
+//                    Text(LocationModel.name)
 //                        .font(.headline)
 //                        .padding()
 //                        .background(.blue)
