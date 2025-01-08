@@ -10,8 +10,10 @@ import MapKit
 
 struct ContentView: View
 {
-    @State private var locations = [Location]()
-    @State private var selectedPlace: Location?
+//    @State private var locations = [Location]()
+//    @State private var selectedPlace: Location?
+    
+    @State private var viewModel = ViewModel()
     
     let startPosition = MapCameraPosition.region(
         MKCoordinateRegion(
@@ -22,54 +24,71 @@ struct ContentView: View
     
     var body: some View
     {
-        MapReader
-        { proxy in
-            Map(initialPosition: startPosition)
-            {
-                ForEach(locations)
-                { location in
-                    
-//                    Marker(location.name, coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude))
-                    
-                    Annotation(location.name, coordinate: location.coordinate)
-                    {
-                        Image(systemName: "star.circle")
-                            .resizable()
-                            .foregroundStyle(.red)
-                            .frame(width: 44, height: 44)
-                            .background(.white)
-                            .clipShape(.circle)
-                            .onLongPressGesture
+        if viewModel.isUnlocked
+        {
+            MapReader
+            { proxy in
+                Map(initialPosition: startPosition)
+                {
+                    ForEach(viewModel.locations)
+                    { location in
+                        
+                        //                    Marker(location.name, coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude))
+                        
+                        Annotation(location.name, coordinate: location.coordinate)
+                        {
+                            Image(systemName: "star.circle")
+                                .resizable()
+                                .foregroundStyle(.red)
+                                .frame(width: 44, height: 44)
+                                .background(.white)
+                                .clipShape(.circle)
+                                .onLongPressGesture
                             {
-                                selectedPlace = location
+                                viewModel.selectedPlace = location
                             }
+                        }
                     }
                 }
-            }
-            .mapStyle(.hybrid)
-            .onTapGesture
-            { position in
-                if let coordinate = proxy.convert(position, from: .local)
-                {
-                    let newLocation = Location(id: UUID(), name: "New location", description: "", latitude: coordinate.latitude, longitude: coordinate.longitude)
-                    locations.append(newLocation)
-                }
-            }
-            .sheet(item: $selectedPlace)
-            { place in
-                
-//                Text(place.name)
-                
-                EditView(location: place)
-                { newLocation in
-                    
-                    if let index = locations.firstIndex(of: place)
+                .mapStyle(.hybrid)
+                .onTapGesture
+                { position in
+                    if let coordinate = proxy.convert(position, from: .local)
                     {
-                        locations[index] = newLocation
+                        //                    let newLocation = Location(id: UUID(), name: "New location", description: "", latitude: coordinate.latitude, longitude: coordinate.longitude)
+                        //                    viewModel.locations.append(newLocation)
+                        
+                        viewModel.addLocation(at: coordinate)
+                    }
+                }
+                .sheet(item: $viewModel.selectedPlace)
+                { place in
+                    
+                    //                Text(place.name)
+                    
+                    EditView(location: place)
+                    {
+                        //                { newLocation in
+                        
+                        //                    if let index = viewModel.locations.firstIndex(of: place)
+                        //                    {
+                        //                        viewModel.locations[index] = newLocation
+                        //                    }
+                        
+                        viewModel.update(location: $0)
                     }
                 }
             }
         }
+        else
+        {
+            Button("Unlock Places", action: viewModel.authenticate)
+                .padding()
+                .background(.blue)
+                .foregroundStyle(.white)
+                .clipShape(.capsule)
+        }
+        
     }
 }
 
