@@ -11,6 +11,7 @@ import LocalAuthentication
 struct TouchIDAndFaceID: View
 {
     @State private var isUnlocked = false
+    @State private var showErrorAlert = false
     
     var body: some View
     {
