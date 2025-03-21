@@ -6,13 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
-struct Project16_HotProspectsApp: App {
-    var body: some Scene {
-        WindowGroup {
+struct Project16_HotProspectsApp: App
+{
+    var body: some Scene
+    {
+        WindowGroup
+        {
             ContentView()
-//            CreatingTabsWithTabViewAndTabItem()
         }
+        .modelContainer(for: Prospect.self)
     }
 }
