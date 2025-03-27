@@ -13,6 +13,20 @@ import UserNotifications
 struct ProspectsView: View
 {
     @Query(sort: \Prospect.name) var prospects: [Prospect]
+    @Query() var prospectsByMostRecents: [Prospect]
+    
+    @State private var shouldShowSortedByName = true
+    
+    var sortTypeToBeUSed: [Prospect]
+    {
+        if shouldShowSortedByName
+        {
+            return prospects
+        }
+        
+        return prospectsByMostRecents
+    }
+    
     @Environment(\.modelContext) var modelContext
     
     enum FilterType
@@ -63,16 +77,34 @@ struct ProspectsView: View
         NavigationStack
         {
 //            Text("People: \(prospects.count)")
-            List(prospects, selection: $selectedProspects)
+//            List(prospects, selection: $selectedProspects)
+            List(sortTypeToBeUSed, selection: $selectedProspects)
             { prospect in
                 
-                VStack(alignment: .leading)
+                HStack
                 {
-                    Text(prospect.name)
-                        .font(.headline)
+                    VStack(alignment: .leading)
+                    {
+                        Text(prospect.name)
+                            .font(.headline)
+                        
+                        Text(prospect.emailAddress)
+                            .foregroundStyle(.secondary)
+                    }
                     
-                    Text(prospect.emailAddress)
-                        .foregroundStyle(.secondary)
+                    if prospect.isContacted
+                    {
+                        Spacer()
+                        
+                        Image(systemName: "person.crop.circle.badge.xmark")
+                            .tint(.blue)
+                    }
+                    else
+                    {
+                        Spacer()
+                        
+                        Image(systemName: "person.crop.circle.fill.badge.checkmark")
+                    }
                 }
                 .swipeActions
                 {
@@ -109,6 +141,14 @@ struct ProspectsView: View
                 .navigationTitle(title)
                 .toolbar
                 {
+                    ToolbarItem(placement: .topBarTrailing)
+                    {
+                        Button("Change sort")
+                        {
+                            shouldShowSortedByName.toggle()
+                        }
+                    }
+                    
                     ToolbarItem(placement: .topBarTrailing)
                     {
                         Button("Scan", systemImage: "qrcode.viewfinder")
