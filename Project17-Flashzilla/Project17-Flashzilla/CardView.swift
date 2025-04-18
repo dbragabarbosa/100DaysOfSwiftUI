@@ -10,6 +10,7 @@ import SwiftUI
 struct CardView: View
 {
     @Environment(\.accessibilityDifferentiateWithoutColor) var accessibilityDifferentiateWithoutColor
+    @Environment(\.accessibilityVoiceOverEnabled) var accessibilityVoiceOverEnabled
     
     let card: Card
     
@@ -39,15 +40,24 @@ struct CardView: View
             
             VStack
             {
-                Text(card.prompt)
-                    .font(.largeTitle)
-                    .foregroundStyle(.black)
-                
-                if isShowingAnswer
+                if accessibilityVoiceOverEnabled
                 {
-                    Text(card.answer)
-                        .font(.title)
-                        .foregroundStyle(.secondary)
+                    Text(isShowingAnswer ? card.answer : card.prompt)
+                        .font(.largeTitle)
+                        .foregroundStyle(.black)
+                }
+                else
+                {
+                    Text(card.prompt)
+                        .font(.largeTitle)
+                        .foregroundStyle(.black)
+                    
+                    if isShowingAnswer
+                    {
+                        Text(card.answer)
+                            .font(.title)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .padding(20)
@@ -57,6 +67,7 @@ struct CardView: View
         .rotationEffect(.degrees(offset.width / 5.0))
         .offset(x: offset.width * 5)
         .opacity(2 - Double(abs(offset.width / 50)))
+        .accessibilityAddTraits(.isButton)
         .gesture(
             DragGesture()
                 .onChanged
@@ -81,6 +92,7 @@ struct CardView: View
         {
             isShowingAnswer.toggle()
         }
+        .animation(.bouncy, value: offset)
     }
 }
 
